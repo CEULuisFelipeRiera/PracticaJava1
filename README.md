@@ -1,5 +1,7 @@
 # PracticaJava1
 
+https://github.com/CEULuisFelipeRiera/PracticaJava1.git
+
 Práctica: aplicación para gestionar cultivos
 de bacterias
 La práctica evaluará sobre 10 puntos sin la implementación de swing, aunque se
