@@ -2,13 +2,13 @@ package org.example;
 import Procesamiento.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestExperimento {
@@ -110,5 +110,82 @@ class TestExperimento {
         String expectedOutput = "1. NewName (ID: 1)\nEnter the number of the Poblacion you want to edit:\nDo you want to change the name? (yes/no)\nEnter the new name for the Poblacion:\nDo you want to change the start date? (yes/no)\nEnter the new start date for the Poblacion (yyyy-MM-dd):\nDo you want to change the end date? (yes/no)\nEnter the new end date for the Poblacion (yyyy-MM-dd):\nDo you want to change the number of bacteria? (yes/no)\nDo you want to change the temperature? (yes/no)\nDo you want to change the luminosity? (yes/no)\nDo you want to change the food dose? (yes/no)\n";
         assertEquals(expectedOutput, outContent.toString());
     }
+    @Test
+    void shouldSaveExperimentToFile() {
+        // Set up the Experimento and Poblacion
+        Experimento experimento = new Experimento(1, "Experimento 1", null);
+        Poblacion poblacion = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
+        experimento.agregarPoblacion(poblacion);
 
+        // Call guardarExperimentoEnArchivo
+        experimento.guardarExperimentoEnArchivo(experimento);
+
+        // Open the file and read its contents
+        try {
+            File file = new File(experimento.getNombreExp());
+            Scanner scanner = new Scanner(file);
+            StringBuilder fileContents = new StringBuilder();
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine()).append("\n");
+            }
+            scanner.close();
+
+            // Check that the contents of the file match the details of the Experimento and its Poblacion
+            String expectedOutput = "Experimento ID: " + experimento.getIdExperimento() + "\n" +
+                    "Experimento Name: " + experimento.getNombreExp() + "\n" +
+                    "\n" +
+                    "Poblacion ID: " + poblacion.getIdPoblacion() + "\n" +
+                    "Poblacion Name: " + poblacion.getNombre() + "\n" +
+                    "Start Date: " + poblacion.getFechaInicio() + "\n" +
+                    "End Date: " + poblacion.getFechaFin() + "\n" +
+                    "Number of Bacteria: " + poblacion.getNumBacterias() + "\n" +
+                    "Temperature: " + poblacion.getTemperatura() + "\n" +
+                    "Luminosity: " + poblacion.getLuminosidad() + "\n" +
+                    "Food Dose: " + poblacion.getDosisComida() + "\n";
+            assertEquals(expectedOutput, fileContents.toString());
+        } catch (FileNotFoundException e) {
+            fail("Failed to open the file");
+        }
+    }
+    @Test
+    void shouldLoadExperimentFromFile() {
+        // Set up the Experimento and Poblacion
+        Experimento experimento = new Experimento(1, "Experimento 1", null);
+        Poblacion poblacion = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
+        experimento.agregarPoblacion(poblacion);
+
+        // Call guardarExperimentoEnArchivo
+        experimento.guardarExperimentoEnArchivo(experimento);
+
+        // Call cargarExperimentoDesdeArchivo
+        Experimento loadedExperimento = new Experimento(0, null, null);
+        loadedExperimento.leerExperimentoDesdeArchivo(experimento.getNombreExp());
+
+        // Open the file and read its contents
+        try {
+            File file = new File(experimento.getNombreExp());
+            Scanner scanner = new Scanner(file);
+            StringBuilder fileContents = new StringBuilder();
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine()).append("\n");
+            }
+            scanner.close();
+
+            // Check that the contents of the file match the expected output
+            String expectedOutput = "Experimento ID: " + experimento.getIdExperimento() + "\n" +
+                    "Experimento Name: " + experimento.getNombreExp() + "\n" +
+                    "\n" +
+                    "Poblacion ID: " + poblacion.getIdPoblacion() + "\n" +
+                    "Poblacion Name: " + poblacion.getNombre() + "\n" +
+                    "Start Date: " + poblacion.getFechaInicio() + "\n" +
+                    "End Date: " + poblacion.getFechaFin() + "\n" +
+                    "Number of Bacteria: " + poblacion.getNumBacterias() + "\n" +
+                    "Temperature: " + poblacion.getTemperatura() + "\n" +
+                    "Luminosity: " + poblacion.getLuminosidad() + "\n" +
+                    "Food Dose: " + poblacion.getDosisComida() + "\n";
+            assertEquals(expectedOutput, fileContents.toString());
+        } catch (FileNotFoundException e) {
+            fail("Failed to open the file");
+        }
+    }
 }

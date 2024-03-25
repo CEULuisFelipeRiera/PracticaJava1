@@ -43,6 +43,11 @@ public class Experimento {
             System.out.println("Invalid choice. Please enter a number between 1 and " + poblaciones.size());
         }
     }
+    public void imprimirNombresPoblaciones() {
+        for (Poblacion poblacion : this.poblaciones) {
+            System.out.println(poblacion.getNombre());
+        }
+    }
     public void editarPoblacion() {
         Scanner scanner = new Scanner(System.in);
 
@@ -133,7 +138,62 @@ public class Experimento {
         }
     }
 
+    public void guardarExperimentoEnArchivo(Experimento experimento) {
+        String nombreArchivo = experimento.getNombreExp();
+        try {
+            FileWriter writer = new FileWriter(nombreArchivo);
 
+            // Write the details of the Experimento
+            writer.write("Experimento ID: " + experimento.getIdExperimento() + "\n");
+            writer.write("Experimento Name: " + experimento.getNombreExp() + "\n");
+
+            // Write the details of each Poblacion
+            for (Poblacion poblacion : experimento.getPoblaciones()) {
+                writer.write("\n");
+                writer.write("Poblacion ID: " + poblacion.getIdPoblacion() + "\n");
+                writer.write("Poblacion Name: " + poblacion.getNombre() + "\n");
+                writer.write("Start Date: " + poblacion.getFechaInicio() + "\n");
+                writer.write("End Date: " + poblacion.getFechaFin() + "\n");
+                writer.write("Number of Bacteria: " + poblacion.getNumBacterias() + "\n");
+                writer.write("Temperature: " + poblacion.getTemperatura() + "\n");
+                writer.write("Luminosity: " + poblacion.getLuminosidad() + "\n");
+                writer.write("Food Dose: " + poblacion.getDosisComida() + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+            e.printStackTrace();
+        }
+    }
+    public void leerExperimentoDesdeArchivo(String pathArchivo) {
+        try {
+            File file = new File(pathArchivo);
+            Scanner scanner = new Scanner(file);
+
+            // Read the details of the Experimento
+            String experimentoId = scanner.nextLine().split(": ")[1];
+            String experimentoName = scanner.nextLine().split(": ")[1];
+
+            // Read the details of each Poblacion
+            while (scanner.hasNextLine()) {
+                scanner.nextLine(); // Skip the empty line
+                String poblacionId = scanner.nextLine().split(": ")[1];
+                String poblacionName = scanner.nextLine().split(": ")[1];
+                String startDate = scanner.nextLine().split(": ")[1];
+                String endDate = scanner.nextLine().split(": ")[1];
+                String numBacterias = scanner.nextLine().split(": ")[1];
+                String temperatura = scanner.nextLine().split(": ")[1];
+                String luminosidad = scanner.nextLine().split(": ")[1];
+                String foodDose = scanner.nextLine().split(": ")[1];
+
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred while reading from the file.");
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String toString() {
