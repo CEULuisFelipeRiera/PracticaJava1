@@ -4,11 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Test {
+public class TestDosis {
     public static BufferedReader bufr = new BufferedReader(new InputStreamReader(System.in));
-    //test dosis
 
-    //crear dosis
     public static void main(String[] args) throws IOException {
         try {
             System.out.println("Creando dosis");
@@ -28,7 +26,6 @@ public class Test {
         }
 
     }
-
 
 }
 

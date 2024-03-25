@@ -1,4 +1,5 @@
 package Procesamiento;
 
-public class Luminosidad {
+public enum Luminosidad {
+    ALTA, MEDIA, BAJA;
 }
