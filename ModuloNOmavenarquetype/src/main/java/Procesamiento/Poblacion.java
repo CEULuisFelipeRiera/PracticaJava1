@@ -50,6 +50,14 @@ public class Poblacion {
         return Objects.hash(getNombre(), idPoblacion, getFechaInicio(), getFechaFin(), getNumBacterias(), getTemperatura(), getLuminosidad(), getDosisComida());
     }
 
+    public int getIdPoblacion() {
+        return idPoblacion;
+    }
+
+    public void setIdPoblacion(int idPoblacion) {
+        this.idPoblacion = idPoblacion;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -62,7 +70,7 @@ public class Poblacion {
         this.fechaFin = fechaFin;
     }
 
-    public void setNumBacteriasIniciales(int numBacterias) {
+    public void setNumBacterias(int numBacterias) {
         this.numBacterias = numBacterias;
     }
 
