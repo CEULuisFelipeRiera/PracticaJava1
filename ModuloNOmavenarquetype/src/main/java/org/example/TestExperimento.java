@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ class TestExperimento {
 
     @BeforeEach
     void setUp() {
-        experimento = new Experimento(1, "Experimento 1", null);
+        this.experimento = new Experimento(1, "Experimento 1", "Some String", new ArrayList<>());
         poblacion1 = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
         poblacion2 = new Poblacion("Poblacion2", 2, new Date(), new Date(), 200, 37.0f, Luminosidad.BAJA, new Dosis(100,15,200,100));
     }
@@ -80,21 +81,12 @@ class TestExperimento {
     @Test
     void shouldEditPoblacion() {
         // Set up the Experimento and Poblacion
-        Experimento experimento = new Experimento(1, "Experimento 1", null);
+        Experimento         experimento = new Experimento(1, "Experimento 1", "Some String", new ArrayList<>());
         Poblacion poblacion = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
         experimento.agregarPoblacion(poblacion);
 
-        // Set up the simulated user input
-        String input = "1\nyes\nNewName\nyes\n2022-12-31\nyes\n2023-12-31\nno\nno\nno\nno\n";
-        InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
-
-        // Set up the ByteArrayOutputStream to capture the output
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Call editarPoblacion
-        experimento.editarPoblacion();
+        // Call editarPoblacion with the new parameters
+        String output = experimento.editarPoblacion(experimento, 1, "NewName", "2022-12-31", "2023-12-31", null, null, null, null);
 
         // Check that the Poblacion has been updated correctly
         assertEquals("NewName", poblacion.getNombre());
@@ -107,18 +99,17 @@ class TestExperimento {
         }
 
         // Check the output
-        String expectedOutput = "1. NewName (ID: 1)\nEnter the number of the Poblacion you want to edit:\nDo you want to change the name? (yes/no)\nEnter the new name for the Poblacion:\nDo you want to change the start date? (yes/no)\nEnter the new start date for the Poblacion (yyyy-MM-dd):\nDo you want to change the end date? (yes/no)\nEnter the new end date for the Poblacion (yyyy-MM-dd):\nDo you want to change the number of bacteria? (yes/no)\nDo you want to change the temperature? (yes/no)\nDo you want to change the luminosity? (yes/no)\nDo you want to change the food dose? (yes/no)\n";
-        assertEquals(expectedOutput, outContent.toString());
+        String expectedOutput = "";
+        assertEquals(expectedOutput, output);
     }
     @Test
     void shouldSaveExperimentToFile() {
         // Set up the Experimento and Poblacion
-        Experimento experimento = new Experimento(1, "Experimento 1", null);
-        Poblacion poblacion = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
+        Experimento         experimento = new Experimento(1, "Experimento 1", "Some String", new ArrayList<>());; Poblacion poblacion = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
         experimento.agregarPoblacion(poblacion);
 
         // Call guardarExperimentoEnArchivo
-        experimento.guardarExperimentoEnArchivo(experimento);
+        experimento.guardarExperimentoComo(experimento);
 
         // Open the file and read its contents
         try {
@@ -148,44 +139,32 @@ class TestExperimento {
         }
     }
     @Test
-    void shouldLoadExperimentFromFile() {
-        // Set up the Experimento and Poblacion
-        Experimento experimento = new Experimento(1, "Experimento 1", null);
-        Poblacion poblacion = new Poblacion("Poblacion1", 1, new Date(), new Date(), 100, 37.0f, Luminosidad.ALTA, new Dosis(150,15,250,150));
-        experimento.agregarPoblacion(poblacion);
-
-        // Call guardarExperimentoEnArchivo
-        experimento.guardarExperimentoEnArchivo(experimento);
-
-        // Call cargarExperimentoDesdeArchivo
-        Experimento loadedExperimento = new Experimento(0, null, null);
-        loadedExperimento.leerExperimentoDesdeArchivo(experimento.getNombreExp());
-
-        // Open the file and read its contents
-        try {
-            File file = new File(experimento.getNombreExp());
-            Scanner scanner = new Scanner(file);
-            StringBuilder fileContents = new StringBuilder();
-            while (scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine()).append("\n");
-            }
-            scanner.close();
-
-            // Check that the contents of the file match the expected output
-            String expectedOutput = "Experimento ID: " + experimento.getIdExperimento() + "\n" +
-                    "Experimento Name: " + experimento.getNombreExp() + "\n" +
-                    "\n" +
-                    "Poblacion ID: " + poblacion.getIdPoblacion() + "\n" +
-                    "Poblacion Name: " + poblacion.getNombre() + "\n" +
-                    "Start Date: " + poblacion.getFechaInicio() + "\n" +
-                    "End Date: " + poblacion.getFechaFin() + "\n" +
-                    "Number of Bacteria: " + poblacion.getNumBacterias() + "\n" +
-                    "Temperature: " + poblacion.getTemperatura() + "\n" +
-                    "Luminosity: " + poblacion.getLuminosidad() + "\n" +
-                    "Food Dose: " + poblacion.getDosisComida() + "\n";
-            assertEquals(expectedOutput, fileContents.toString());
-        } catch (FileNotFoundException e) {
-            fail("Failed to open the file");
-        }
+    void shouldCreateExperimentoFromValidFile() {
+        Experimento experimento = new Experimento(0, null, "C:\\Users\\pipe\\Documents\\Programacion CEU\\Java\\IntelliJ\\Segundo Curso\\Archivos de Texto Practica 1\\experimento1.txt", null);
+        Experimento loadedExperimento = experimento.leerExperimentoDesdeArchivo("C:\\Users\\pipe\\Documents\\Programacion CEU\\Java\\IntelliJ\\Segundo Curso\\Archivos de Texto Practica 1\\experimento1.txt");
+        assertNotNull(loadedExperimento);
+        assertEquals(1, loadedExperimento.getIdExperimento());
+        assertEquals("Experimento 1", loadedExperimento.getNombreExp());
     }
+
+    @Test
+    void shouldNotCreateExperimentoFromInvalidFileFormat() {
+        Experimento experimento = new Experimento(0, null, "C:\\Users\\pipe\\Documents\\Programacion CEU\\Java\\IntelliJ\\Segundo Curso\\Archivos de Texto Practica 1\\experimentoNOvalido.txtt", null);
+        assertThrows(IllegalArgumentException.class, () -> experimento.leerExperimentoDesdeArchivo("C:\\Users\\pipe\\Documents\\Programacion CEU\\Java\\IntelliJ\\Segundo Curso\\Archivos de Texto Practica 1\\experimentoNOvalido.txt"));
+    }
+    @Test
+    void shouldSaveExperimentoToValidFile() {
+        Experimento experimento = new Experimento(1, "Experimento 1", "C:\\Users\\pipe\\Documents\\Programacion CEU\\Java\\IntelliJ\\Segundo Curso\\Archivos de Texto Practica 1\\experimentoNOvalido.txt", new ArrayList<>());
+        assertDoesNotThrow(() -> experimento.guardar(experimento));
+    }
+
+    @Test
+    void shouldSaveAndLoadExperimentoCorrectly() {
+        Experimento experimento = new Experimento(1, "Experimento 1", "validFilePath", new ArrayList<>());
+        experimento.guardar(experimento);
+        Experimento loadedExperimento = experimento.leerExperimentoDesdeArchivo("validFilePath");
+        assertEquals(experimento.getIdExperimento(), loadedExperimento.getIdExperimento());
+        assertEquals(experimento.getNombreExp(), loadedExperimento.getNombreExp());
+    }
+
 }

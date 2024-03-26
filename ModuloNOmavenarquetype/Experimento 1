@@ -3,9 +3,9 @@ Experimento Name: Experimento 1
 
 Poblacion ID: 1
 Poblacion Name: Poblacion1
-Start Date: Mon Mar 25 19:14:48 CET 2024
-End Date: Mon Mar 25 19:14:48 CET 2024
+Start Date: Tue Mar 26 10:49:43 CET 2024
+End Date: Tue Mar 26 10:49:43 CET 2024
 Number of Bacteria: 100
 Temperature: 37.0
 Luminosity: ALTA
-Food Dose: Dosis{cantidadInicial=150.0, diaDeIncremento=15.0, cantidadIncremento=250.0, cantidadFinal=150.0}
+Food Dose: Dosis{  cantidadInicial=150.0, diaDeIncremento=15.0, cantidadIncremento=250.0, cantidadFinal=150.0}

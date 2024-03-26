@@ -7,7 +7,8 @@ public class Poblacion {
     public int  idPoblacion;
     public Date fechaInicio;
     public Date fechaFin;
-    public int numBacterias;
+    // i use integer because i need the number of bacteria to be null in the editPoblacion method
+    public Integer numBacterias;
     public float temperatura;
     public Luminosidad luminosidad;
     public Dosis dosisComida;

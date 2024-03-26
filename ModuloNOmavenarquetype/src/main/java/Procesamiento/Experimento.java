@@ -6,13 +6,16 @@ import java.util.Scanner;
 import java.io.*;
 
 public class Experimento {
-    private int idExperimento;
-    private String nombreExp;
-    private ArrayList<Poblacion> poblaciones;
+    public int idExperimento;
+    public String nombreExp;
+    public String pathArchivo;
+    public ArrayList<Poblacion> poblaciones;
+    
 
-    public Experimento(int idExperimento, String nombreExp, List<Poblacion> poblaciones) {
+    public Experimento(int idExperimento, String nombreExp, String pathArchivo, List<Poblacion> poblaciones) {
         this.idExperimento = idExperimento;
         this.nombreExp = nombreExp;
+        this.pathArchivo = pathArchivo;
         this.poblaciones = new ArrayList<>();
     }
 
@@ -25,8 +28,8 @@ public class Experimento {
         agregarPoblacion(poblacion1);
     }
 
-    public void borrarPoblacion(Poblacion poblacion) {
-        this.poblaciones.remove(poblacion);
+    public boolean borrarPoblacion(Poblacion poblacion) {
+        return this.poblaciones.remove(poblacion);
     }
 
     public void mostrarPoblacion() {
@@ -48,98 +51,62 @@ public class Experimento {
             System.out.println(poblacion.getNombre());
         }
     }
-    public void editarPoblacion(Experimento experimento) {
-        Scanner scanner = new Scanner(System.in);
+    public String editarPoblacion(Experimento experimento, int choice, String newName, String newStartDateStr, String newEndDateStr, Integer newNumBacteria, Float newTemperature, String newLuminosityStr, Dosis newDosis) {
+        StringBuilder output = new StringBuilder();
 
-        // Print the list of Poblacion objects and ask the user to choose one
-        for (int i = 0; i < experimento.poblaciones.size(); i++) {
-            System.out.println((i + 1) + ". " + experimento.poblaciones.get(i).getNombre() + " (ID: " + experimento.poblaciones.get(i).getIdPoblacion() + ")");
-        }
-        System.out.println("Enter the number of the Poblacion you want to edit:");
-        int choice = scanner.nextInt();
-
-        // If the user's choice is valid, present a menu of fields that can be changed
-        if (choice > 0 && choice <= experimento.poblaciones.size()) {
+            if (choice > 0 && choice <= experimento.poblaciones.size()) {
             Poblacion poblacion = experimento.poblaciones.get(choice - 1);
-            scanner.nextLine(); // Consume the newline left-over
 
-            System.out.println("Do you want to change the name? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new name for the Poblacion:");
-                String newName = scanner.nextLine();
+            if (newName != null) {
                 poblacion.setNombre(newName);
             }
 
-
-            System.out.println("Do you want to change the start date? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new start date for the Poblacion (yyyy-MM-dd):");
-                String newStartDateStr = scanner.nextLine();
+            if (newStartDateStr != null) {
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     Date newStartDate = formatter.parse(newStartDateStr);
                     poblacion.setFechaInicio(newStartDate);
                 } catch (ParseException e) {
-                    System.out.println("Invalid date format. Please enter the date in the format yyyy-MM-dd.");
+                    output.append("Invalid date format. Please enter the date in the format yyyy-MM-dd.\n");
                 }
             }
 
-            System.out.println("Do you want to change the end date? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new end date for the Poblacion (yyyy-MM-dd):");
-                String newEndDateStr = scanner.nextLine();
+            if (newEndDateStr != null) {
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     Date newEndDate = formatter.parse(newEndDateStr);
                     poblacion.setFechaFin(newEndDate);
                 } catch (ParseException e) {
-                    System.out.println("Invalid date format. Please enter the date in the format yyyy-MM-dd.");
+                    output.append("Invalid date format. Please enter the date in the format yyyy-MM-dd.\n");
                 }
             }
 
-            System.out.println("Do you want to change the number of bacteria? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new number of bacteria for the Poblacion:");
-                int newNumBacteria = scanner.nextInt();
+            if (newNumBacteria != null) {
                 poblacion.setNumBacterias(newNumBacteria);
             }
 
-            System.out.println("Do you want to change the temperature? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new temperature for the Poblacion:");
-                float newTemperature = scanner.nextFloat();
+            if (newTemperature != null) {
                 poblacion.setTemperatura(newTemperature);
             }
 
-            System.out.println("Do you want to change the luminosity? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new luminosity for the Poblacion (ALTA, MEDIA, BAJA):");
-                Luminosidad newLuminosity = Luminosidad.valueOf(scanner.nextLine().toUpperCase());
+            if (newLuminosityStr != null) {
+                Luminosidad newLuminosity = Luminosidad.valueOf(newLuminosityStr.toUpperCase());
                 poblacion.setLuminosidad(newLuminosity);
             }
 
-            System.out.println("Do you want to change the food dose? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new food dose for the Poblacion:");
-                System.out.println("Enter the initial amount of food:");
-                double newInitialAmount = scanner.nextDouble();
-                System.out.println("Enter the day of the increment:");
-                double newDayIncrement = scanner.nextDouble();
-                System.out.println("Enter the amount of the increment:");
-                double newAmountIncrement = scanner.nextDouble();
-                System.out.println("Enter the final amount of food:");
-                double newFinalAmount = scanner.nextDouble();
-                Dosis newDosis = new Dosis(newInitialAmount, newDayIncrement, newAmountIncrement, newFinalAmount);
+            if (newDosis != null) {
                 poblacion.setDosisComida(newDosis);
             }
 
         } else {
-            System.out.println("Invalid choice. Please enter a number between 1 and " + poblaciones.size());
+            output.append("Invalid choice. Please enter a number between 1 and " + poblaciones.size() + "\n");
         }
+
+        return output.toString();
     }
 
-    public void guardarExperimentoEnArchivo(Experimento experimento) {
-        String nombreArchivo = experimento.getNombreExp();
+    public void guardarExperimentoComo(Experimento experimento) {
+        String nombreArchivo = experimento.getPathArchivo();
         try {
             FileWriter writer = new FileWriter(nombreArchivo);
 
@@ -165,42 +132,102 @@ public class Experimento {
             e.printStackTrace();
         }
     }
-    public void leerExperimentoDesdeArchivo(String pathArchivo) {
+    public Experimento leerExperimentoDesdeArchivo(String pathArchivo) {
+        Experimento experimento = null;
         try {
             File file = new File(pathArchivo);
             Scanner scanner = new Scanner(file);
 
             // Read the details of the Experimento
-            String experimentoId = scanner.nextLine().split(": ")[1];
+            int experimentoId = Integer.parseInt(scanner.nextLine().split(": ")[1]);
             String experimentoName = scanner.nextLine().split(": ")[1];
+
+            // Create the Experimento object
+            experimento = new Experimento(experimentoId, experimentoName, pathArchivo, new ArrayList<>());
 
             // Read the details of each Poblacion
             while (scanner.hasNextLine()) {
                 scanner.nextLine(); // Skip the empty line
-                String poblacionId = scanner.nextLine().split(": ")[1];
+                int poblacionId = Integer.parseInt(scanner.nextLine().split(": ")[1]);
                 String poblacionName = scanner.nextLine().split(": ")[1];
                 String startDate = scanner.nextLine().split(": ")[1];
                 String endDate = scanner.nextLine().split(": ")[1];
-                String numBacterias = scanner.nextLine().split(": ")[1];
-                String temperatura = scanner.nextLine().split(": ")[1];
-                String luminosidad = scanner.nextLine().split(": ")[1];
+                int numBacterias = Integer.parseInt(scanner.nextLine().split(": ")[1]);
+                float temperatura = Float.parseFloat(scanner.nextLine().split(": ")[1]);
+                Luminosidad luminosidad = Luminosidad.valueOf(scanner.nextLine().split(": ")[1].toUpperCase());
                 String foodDose = scanner.nextLine().split(": ")[1];
 
+                // Parse the foodDose string into four double values
+                String[] foodDoseParts = foodDose.split(",");
+                double part1 = Double.parseDouble(foodDoseParts[0]);
+                double part2 = Double.parseDouble(foodDoseParts[1]);
+                double part3 = Double.parseDouble(foodDoseParts[2]);
+                double part4 = Double.parseDouble(foodDoseParts[3]);
+
+                // Create the Dosis object
+                Dosis dosis = new Dosis(part1, part2, part3, part4);
+
+                // Create the Poblacion object
+                Poblacion poblacion = new Poblacion(poblacionName, poblacionId, new SimpleDateFormat("yyyy-MM-dd").parse(startDate), new SimpleDateFormat("yyyy-MM-dd").parse(endDate), numBacterias, temperatura, luminosidad, dosis);
+
+                // Add the Poblacion to the Experimento
+                experimento.agregarPoblacion(poblacion);
             }
 
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred while reading from the file.");
+            System.out.println("An error occurred while searching the file.");
+            e.printStackTrace();
+        } catch (ParseException e) {
+            System.out.println("An error occurred while parsing the date.");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The file format is incorrect.", e);
+        }
+        return experimento;
+    }
+
+    public void guardar(Experimento experimento) {
+        String nombreArchivo = experimento.getPathArchivo();
+        try {
+            FileWriter writer = new FileWriter(nombreArchivo);
+
+            // Write the details of the Experimento
+            writer.write("Experimento ID: " + experimento.getIdExperimento() + "\n");
+            writer.write("Experimento Name: " + experimento.getNombreExp() + "\n");
+
+            // Write the details of each Poblacion
+            for (Poblacion poblacion : experimento.getPoblaciones()) {
+                writer.write("\n");
+                writer.write("Poblacion ID: " + poblacion.getIdPoblacion() + "\n");
+                writer.write("Poblacion Name: " + poblacion.getNombre() + "\n");
+                writer.write("Start Date: " + poblacion.getFechaInicio() + "\n");
+                writer.write("End Date: " + poblacion.getFechaFin() + "\n");
+                writer.write("Number of Bacteria: " + poblacion.getNumBacterias() + "\n");
+                writer.write("Temperature: " + poblacion.getTemperatura() + "\n");
+                writer.write("Luminosity: " + poblacion.getLuminosidad() + "\n");
+                writer.write("Food Dose: " + poblacion.getDosisComida() + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
             e.printStackTrace();
         }
     }
-
     @Override
     public String toString() {
         return "Experimento{" +
                 "idExperimento=" + idExperimento +
                 ", nombreExp='" + nombreExp + '\'' +
                 '}';
+    }
+
+    public String getPathArchivo() {
+        return pathArchivo;
+    }
+
+    public void setPathArchivo(String pathArchivo) {
+        this.pathArchivo = pathArchivo;
     }
 
     public int getIdExperimento() {

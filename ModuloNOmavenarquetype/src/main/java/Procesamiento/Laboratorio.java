@@ -6,59 +6,49 @@ import java.util.Scanner;
 
 public class Laboratorio {
     public List<Experimento> experimentos;
+    public Laboratorio() {
+        this.experimentos = new ArrayList<>();
+    }
 
-    public void crearExperimento(int idExperimento, String nombreExp, ArrayList<Poblacion> poblaciones) {
+    public void crearExperimento(int idExperimento, String nombreExp,  String pathArchivo, ArrayList<Poblacion> poblaciones) {
         // Create a new Experimento object
-        Experimento newExperimento = new Experimento(idExperimento, nombreExp, poblaciones);
+        Experimento newExperimento = new Experimento(idExperimento, nombreExp, pathArchivo, poblaciones);
         this.experimentos.add(newExperimento);
     }
 
-    public void eliminarExperimento(Experimento experimento) {
-        this.experimentos.remove(experimento);
-    }
-    public void mostrarExperimento(Experimento experimento) {
-        System.out.println(experimento.toString());
+    public String editarExperimento(int choice, String newIdStr, String newName) {
+        StringBuilder output = new StringBuilder();
 
-        // Print the details of each Poblacion in the Experimento
-        for (Poblacion poblacion : experimento.getPoblaciones()) {
-            System.out.println(poblacion.toString());
-        }
-    }
-    public  void editarExperimento() {
-        Scanner scanner = new Scanner(System.in);
-
-        // Print the list of Poblacion objects and ask the user to choose one
-        for (int i = 0; i < experimentos.size(); i++) {
-            System.out.println((i + 1) + ". " + experimentos.get(i).getIdExperimento() + " (ID: " + experimentos.get(i).getNombreExp() + ")");
-        }
-        System.out.println("Enter the number of the Experiment you want to edit:");
-        int choice = scanner.nextInt();
+        // If the user's choice is valid, present a menu of fields that can be changed
         if (choice > 0 && choice <= experimentos.size()) {
-            Experimento experimento1 = experimentos.get(choice - 1);
-            scanner.nextLine(); // Consume the newline left-over
+            Experimento experimento = experimentos.get(choice - 1);
 
-            System.out.println("Do you want to change the Id? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new Id for the experiment:");
-                int id = Integer.parseInt(scanner.nextLine());
-                experimento1.setIdExperimento(id);
+            if (newIdStr != null) {
+                try {
+                    int newId = Integer.parseInt(newIdStr);
+                    experimento.setIdExperimento(newId);
+                } catch (NumberFormatException e) {
+                    output.append("Invalid ID format. Please enter a valid integer.\n");
+                }
             }
 
-            System.out.println("Do you want to change the name? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                System.out.println("Enter the new name for the experiment:");
-                String newName2 = scanner.nextLine();
-                experimento1.setNombreExp(newName2);
-            }
-
-            System.out.println("Do you want to edit the Poblaciones? (yes/no)");
-            if (scanner.nextLine().equalsIgnoreCase("yes")) {
-                editarExperimento();
+            if (newName != null) {
+                experimento.setNombreExp(newName);
             }
 
         } else {
-            System.out.println("Invalid choice. Please enter a number between 1 and " + experimentos.size());
+            output.append("Invalid choice. Please enter a number between 1 and " + experimentos.size() + "\n");
         }
-    }
 
+        return output.toString();
+    }
+    public boolean eliminarExperimentoPorId(int id) {
+        for (Experimento experimento : experimentos) {
+            if (experimento.getIdExperimento() == id) {
+                experimentos.remove(experimento);
+                return true;
+            }
+        }
+        return false;
+    }
 }
