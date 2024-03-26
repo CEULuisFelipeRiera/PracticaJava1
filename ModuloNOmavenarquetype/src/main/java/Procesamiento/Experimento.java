@@ -4,14 +4,29 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Scanner;
 import java.io.*;
+import GestionDeMemoria.*;
 
+/**
+ * The Experimento class represents an experiment in a laboratory.
+ * It contains information about the experiment such as its id, name, file path, and a list of populations involved in the experiment.
+ */
 public class Experimento {
+    // The id of the experiment
     public int idExperimento;
+    // The name of the experiment
     public String nombreExp;
+    // The file path of the experiment
     public String pathArchivo;
+    // The list of populations involved in the experiment
     public ArrayList<Poblacion> poblaciones;
-    
 
+    /**
+     * Constructs a new Experimento with the given parameters.
+     * @param idExperimento The id of the experiment
+     * @param nombreExp The name of the experiment
+     * @param pathArchivo The file path of the experiment
+     * @param poblaciones The list of populations involved in the experiment
+     */
     public Experimento(int idExperimento, String nombreExp, String pathArchivo, List<Poblacion> poblaciones) {
         this.idExperimento = idExperimento;
         this.nombreExp = nombreExp;
@@ -19,42 +34,86 @@ public class Experimento {
         this.poblaciones = new ArrayList<>();
     }
 
+    /**
+     * Adds a population to the list of populations involved in the experiment.
+     * @param poblacion The population to be added
+     */
     public void agregarPoblacion(Poblacion poblacion) {
         this.poblaciones.add(poblacion);
     }
 
+    /**
+     * Creates a new population and adds it to the list of populations involved in the experiment.
+     * @param nombre The name of the population
+     * @param idPoblacion The id of the population
+     * @param fechaInicio The start date of the population
+     * @param fechaFin The end date of the population
+     * @param numBacterias The number of bacteria in the population
+     * @param temperatura The temperature of the population
+     * @param luminosidad The luminosity of the population
+     * @param dosisComida The food dose of the population
+     */
     public void crearPoblacion(String nombre, int idPoblacion, Date fechaInicio, Date fechaFin, int numBacterias, float temperatura, Luminosidad luminosidad, Dosis dosisComida) {
         Poblacion poblacion1 = new Poblacion(nombre, idPoblacion, fechaInicio, fechaFin, numBacterias, temperatura, luminosidad, dosisComida);
         agregarPoblacion(poblacion1);
     }
 
+    /**
+     * Removes a population from the list of populations involved in the experiment.
+     * @param poblacion The population to be removed
+     * @return true if the population was successfully removed; false otherwise
+     */
     public boolean borrarPoblacion(Poblacion poblacion) {
         return this.poblaciones.remove(poblacion);
     }
 
-    public void mostrarPoblacion() {
-        Scanner scanner = new Scanner(System.in);
-
-        for (int i = 0; i < poblaciones.size(); i++) {
-            System.out.println((i + 1) + ". " + poblaciones.get(i).getNombre() + " (ID: " + poblaciones.get(i).getIdPoblacion() + ")");
+    /**
+     * Returns a string representation of a population with the given name.
+     * @param nombrePoblacion The name of the population
+     * @return A string representation of the population if it exists; a message indicating that the population was not found otherwise
+     */
+    public String mostrarPoblacion(String nombrePoblacion) {
+        Poblacion poblacion = null;
+        for (Poblacion p : poblaciones) {
+            if (p.getNombre().equals(nombrePoblacion)) {
+                poblacion = p;
+                break;
+            }
         }
-        System.out.println("Enter the number of the Poblacion you want to see:");
-        int choice = scanner.nextInt();
-        if (choice > 0 && choice <= poblaciones.size()) {
-            System.out.println(poblaciones.get(choice - 1));
+
+        if (poblacion != null) {
+            return poblacion.toString();
         } else {
-            System.out.println("Invalid choice. Please enter a number between 1 and " + poblaciones.size());
+            return "No se encontró la población con el nombre dado.";
         }
     }
+
+    /**
+     * Prints the names of all populations involved in the experiment.
+     */
     public void imprimirNombresPoblaciones() {
         for (Poblacion poblacion : this.poblaciones) {
             System.out.println(poblacion.getNombre());
         }
     }
+
+    /**
+     * Edits a population based on the user's choice and the new parameters provided.
+     * @param experimento The experiment containing the population to be edited
+     * @param choice The index of the population to be edited
+     * @param newName The new name for the population
+     * @param newStartDateStr The new start date for the population
+     * @param newEndDateStr The new end date for the population
+     * @param newNumBacteria The new number of bacteria in the population
+     * @param newTemperature The new temperature of the population
+     * @param newLuminosityStr The new luminosity of the population
+     * @param newDosis The new food dose of the population
+     * @return A string indicating the result of the operation
+     */
     public String editarPoblacion(Experimento experimento, int choice, String newName, String newStartDateStr, String newEndDateStr, Integer newNumBacteria, Float newTemperature, String newLuminosityStr, Dosis newDosis) {
         StringBuilder output = new StringBuilder();
 
-            if (choice > 0 && choice <= experimento.poblaciones.size()) {
+        if (choice > 0 && choice <= experimento.poblaciones.size()) {
             Poblacion poblacion = experimento.poblaciones.get(choice - 1);
 
             if (newName != null) {
@@ -105,115 +164,10 @@ public class Experimento {
         return output.toString();
     }
 
-    public void guardarExperimentoComo(Experimento experimento) {
-        String nombreArchivo = experimento.getPathArchivo();
-        try {
-            FileWriter writer = new FileWriter(nombreArchivo);
-
-            // Write the details of the Experimento
-            writer.write("Experimento ID: " + experimento.getIdExperimento() + "\n");
-            writer.write("Experimento Name: " + experimento.getNombreExp() + "\n");
-
-            // Write the details of each Poblacion
-            for (Poblacion poblacion : experimento.getPoblaciones()) {
-                writer.write("\n");
-                writer.write("Poblacion ID: " + poblacion.getIdPoblacion() + "\n");
-                writer.write("Poblacion Name: " + poblacion.getNombre() + "\n");
-                writer.write("Start Date: " + poblacion.getFechaInicio() + "\n");
-                writer.write("End Date: " + poblacion.getFechaFin() + "\n");
-                writer.write("Number of Bacteria: " + poblacion.getNumBacterias() + "\n");
-                writer.write("Temperature: " + poblacion.getTemperatura() + "\n");
-                writer.write("Luminosity: " + poblacion.getLuminosidad() + "\n");
-                writer.write("Food Dose: " + poblacion.getDosisComida() + "\n");
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while writing to the file.");
-            e.printStackTrace();
-        }
-    }
-    public Experimento leerExperimentoDesdeArchivo(String pathArchivo) {
-        Experimento experimento = null;
-        try {
-            File file = new File(pathArchivo);
-            Scanner scanner = new Scanner(file);
-
-            // Read the details of the Experimento
-            int experimentoId = Integer.parseInt(scanner.nextLine().split(": ")[1]);
-            String experimentoName = scanner.nextLine().split(": ")[1];
-
-            // Create the Experimento object
-            experimento = new Experimento(experimentoId, experimentoName, pathArchivo, new ArrayList<>());
-
-            // Read the details of each Poblacion
-            while (scanner.hasNextLine()) {
-                scanner.nextLine(); // Skip the empty line
-                int poblacionId = Integer.parseInt(scanner.nextLine().split(": ")[1]);
-                String poblacionName = scanner.nextLine().split(": ")[1];
-                String startDate = scanner.nextLine().split(": ")[1];
-                String endDate = scanner.nextLine().split(": ")[1];
-                int numBacterias = Integer.parseInt(scanner.nextLine().split(": ")[1]);
-                float temperatura = Float.parseFloat(scanner.nextLine().split(": ")[1]);
-                Luminosidad luminosidad = Luminosidad.valueOf(scanner.nextLine().split(": ")[1].toUpperCase());
-                String foodDose = scanner.nextLine().split(": ")[1];
-
-                // Parse the foodDose string into four double values
-                String[] foodDoseParts = foodDose.split(",");
-                double part1 = Double.parseDouble(foodDoseParts[0]);
-                double part2 = Double.parseDouble(foodDoseParts[1]);
-                double part3 = Double.parseDouble(foodDoseParts[2]);
-                double part4 = Double.parseDouble(foodDoseParts[3]);
-
-                // Create the Dosis object
-                Dosis dosis = new Dosis(part1, part2, part3, part4);
-
-                // Create the Poblacion object
-                Poblacion poblacion = new Poblacion(poblacionName, poblacionId, new SimpleDateFormat("yyyy-MM-dd").parse(startDate), new SimpleDateFormat("yyyy-MM-dd").parse(endDate), numBacterias, temperatura, luminosidad, dosis);
-
-                // Add the Poblacion to the Experimento
-                experimento.agregarPoblacion(poblacion);
-            }
-
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred while searching the file.");
-            e.printStackTrace();
-        } catch (ParseException e) {
-            System.out.println("An error occurred while parsing the date.");
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The file format is incorrect.", e);
-        }
-        return experimento;
-    }
-
-    public void guardar(Experimento experimento) {
-        String nombreArchivo = experimento.getPathArchivo();
-        try {
-            FileWriter writer = new FileWriter(nombreArchivo);
-
-            // Write the details of the Experimento
-            writer.write("Experimento ID: " + experimento.getIdExperimento() + "\n");
-            writer.write("Experimento Name: " + experimento.getNombreExp() + "\n");
-
-            // Write the details of each Poblacion
-            for (Poblacion poblacion : experimento.getPoblaciones()) {
-                writer.write("\n");
-                writer.write("Poblacion ID: " + poblacion.getIdPoblacion() + "\n");
-                writer.write("Poblacion Name: " + poblacion.getNombre() + "\n");
-                writer.write("Start Date: " + poblacion.getFechaInicio() + "\n");
-                writer.write("End Date: " + poblacion.getFechaFin() + "\n");
-                writer.write("Number of Bacteria: " + poblacion.getNumBacterias() + "\n");
-                writer.write("Temperature: " + poblacion.getTemperatura() + "\n");
-                writer.write("Luminosity: " + poblacion.getLuminosidad() + "\n");
-                writer.write("Food Dose: " + poblacion.getDosisComida() + "\n");
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while writing to the file.");
-            e.printStackTrace();
-        }
-    }
+    /**
+     * Returns a string representation of the Experimento.
+     * @return A string representation of the Experimento
+     */
     @Override
     public String toString() {
         return "Experimento{" +
@@ -222,6 +176,7 @@ public class Experimento {
                 '}';
     }
 
+    // Getters and setters for the Experimento's fields
     public String getPathArchivo() {
         return pathArchivo;
     }

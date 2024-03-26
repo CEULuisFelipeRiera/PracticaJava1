@@ -2,17 +2,39 @@ package Procesamiento;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * The Poblacion class represents a population in an experiment.
+ * It contains information about the population such as its name, id, start and end dates, number of bacteria, temperature, luminosity, and food dose.
+ */
 public class Poblacion {
+    // The name of the population
     public String nombre;
+    // The id of the population
     public int  idPoblacion;
+    // The start date of the population
     public Date fechaInicio;
+    // The end date of the population
     public Date fechaFin;
-    // i use integer because i need the number of bacteria to be null in the editPoblacion method
+    // The number of bacteria in the population. It's an Integer because it needs to be null in the editPoblacion method
     public Integer numBacterias;
+    // The temperature of the population
     public float temperatura;
+    // The luminosity of the population
     public Luminosidad luminosidad;
+    // The food dose of the population
     public Dosis dosisComida;
 
+    /**
+     * Constructs a new Poblacion with the given parameters.
+     * @param nombre The name of the population
+     * @param idPoblacion The id of the population
+     * @param fechaInicio The start date of the population
+     * @param fechaFin The end date of the population
+     * @param numBacterias The number of bacteria in the population
+     * @param temperatura The temperature of the population
+     * @param luminosidad The luminosity of the population
+     * @param dosisComida The food dose of the population
+     */
     public Poblacion(String nombre, int idPoblacion, Date fechaInicio, Date fechaFin, int numBacterias,
                      float temperatura, Luminosidad luminosidad, Dosis dosisComida) {
         this.nombre = nombre;
@@ -25,6 +47,10 @@ public class Poblacion {
         this.dosisComida = dosisComida;
     }
 
+    /**
+     * Returns a string representation of the Poblacion.
+     * @return A string representation of the Poblacion
+     */
     @Override
     public String toString() {
         return "Poblacion{" +
@@ -38,6 +64,11 @@ public class Poblacion {
                 '}';
     }
 
+    /**
+     * Checks if this Poblacion is equal to another object.
+     * @param o The object to compare this Poblacion to
+     * @return true if the objects are the same; false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,11 +77,16 @@ public class Poblacion {
         return idPoblacion == poblacion.idPoblacion && getNumBacterias() == poblacion.getNumBacterias() && Float.compare(getTemperatura(), poblacion.getTemperatura()) == 0 && Objects.equals(getNombre(), poblacion.getNombre()) && Objects.equals(getFechaInicio(), poblacion.getFechaInicio()) && Objects.equals(getFechaFin(), poblacion.getFechaFin()) && getLuminosidad() == poblacion.getLuminosidad() && Objects.equals(getDosisComida(), poblacion.getDosisComida());
     }
 
+    /**
+     * Returns a hash code value for the Poblacion.
+     * @return A hash code value for the Poblacion
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getNombre(), idPoblacion, getFechaInicio(), getFechaFin(), getNumBacterias(), getTemperatura(), getLuminosidad(), getDosisComida());
     }
 
+    // Getters and setters for the Poblacion's fields
     public int getIdPoblacion() {
         return idPoblacion;
     }
