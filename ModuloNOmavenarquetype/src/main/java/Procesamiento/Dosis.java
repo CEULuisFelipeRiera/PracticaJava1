@@ -35,7 +35,7 @@ public class Dosis {
     @Override
     public String toString() {
         return "Dosis{" +
-                "cantidadInicial=" + cantidadInicial +
+                "  cantidadInicial=" + cantidadInicial +
                 ", diaDeIncremento=" + diaDeIncremento +
                 ", cantidadIncremento=" + cantidadIncremento +
                 ", cantidadFinal=" + cantidadFinal +

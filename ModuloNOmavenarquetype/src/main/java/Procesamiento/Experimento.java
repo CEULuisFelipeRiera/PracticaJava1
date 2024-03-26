@@ -48,19 +48,19 @@ public class Experimento {
             System.out.println(poblacion.getNombre());
         }
     }
-    public void editarPoblacion() {
+    public void editarPoblacion(Experimento experimento) {
         Scanner scanner = new Scanner(System.in);
 
         // Print the list of Poblacion objects and ask the user to choose one
-        for (int i = 0; i < poblaciones.size(); i++) {
-            System.out.println((i + 1) + ". " + poblaciones.get(i).getNombre() + " (ID: " + poblaciones.get(i).getIdPoblacion() + ")");
+        for (int i = 0; i < experimento.poblaciones.size(); i++) {
+            System.out.println((i + 1) + ". " + experimento.poblaciones.get(i).getNombre() + " (ID: " + experimento.poblaciones.get(i).getIdPoblacion() + ")");
         }
         System.out.println("Enter the number of the Poblacion you want to edit:");
         int choice = scanner.nextInt();
 
         // If the user's choice is valid, present a menu of fields that can be changed
-        if (choice > 0 && choice <= poblaciones.size()) {
-            Poblacion poblacion = poblaciones.get(choice - 1);
+        if (choice > 0 && choice <= experimento.poblaciones.size()) {
+            Poblacion poblacion = experimento.poblaciones.get(choice - 1);
             scanner.nextLine(); // Consume the newline left-over
 
             System.out.println("Do you want to change the name? (yes/no)");
@@ -200,7 +200,6 @@ public class Experimento {
         return "Experimento{" +
                 "idExperimento=" + idExperimento +
                 ", nombreExp='" + nombreExp + '\'' +
-                ", poblaciones=" + poblaciones +
                 '}';
     }
 
